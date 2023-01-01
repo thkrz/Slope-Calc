@@ -9,10 +9,10 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.formdev:flatlaf:3.+'
+    implementation 'com.formdev:flatlaf:+'
     implementation 'org.locationtech.jts:jts-core:1.19.+'
 }
 
 application {
-    mainClass = 'com.erdrutsch.sscad.App'
+    mainClass = 'com.erdrutsch.slopecalc.App'
 }

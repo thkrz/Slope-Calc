@@ -1,10 +1,10 @@
-package com.erdrutsch.sscad;
+package com.erdrutsch.slopecalc;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.BorderLayout;
 import javax.swing.*;
 
-import com.erdrutsch.sscad.controls.*;
+import com.erdrutsch.slopecalc.controls.*;
 
 public class App extends JFrame {
   private final JDesktopPane mdi = new JDesktopPane();
@@ -45,7 +45,7 @@ public class App extends JFrame {
     try {
       UIManager.setLookAndFeel(new FlatLightLaf());
     } catch (Exception e) {
-      System.err.println("Failed to initialize LaF");
+      System.err.println("Failed to initialize Look & Feel");
     }
 
     SwingUtilities.invokeLater(

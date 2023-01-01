@@ -1,4 +1,4 @@
-package com.erdrutsch.sscad.controls;
+package com.erdrutsch.slopecalc.controls;
 
 import java.awt.FlowLayout;
 import javax.swing.*;
@@ -8,7 +8,7 @@ public class Statusbar extends JPanel {
   private final JLabel info = new JLabel();
 
   public Statusbar() {
-    createComponents();  
+    createComponents();
   }
 
   private void createComponents() {

@@ -1,4 +1,4 @@
-package com.erdrutsch.sscad.controls;
+package com.erdrutsch.slopecalc.controls;
 
 import javax.swing.*;
 

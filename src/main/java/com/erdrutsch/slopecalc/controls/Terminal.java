@@ -1,4 +1,4 @@
-package com.erdrutsch.sscad.controls;
+package com.erdrutsch.slopecalc.controls;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -12,7 +12,7 @@ public class Terminal extends JPanel {
   public Terminal() {
     stdout = new JTextArea();
     stdin = new JTextField();
-    prompt = new JLabel("Command: ");    
+    prompt = new JLabel("Command: ");
     createComponents();
   }
 
