@@ -12,7 +12,7 @@ public class Statusbar extends JPanel {
   }
 
   private void createComponents() {
-    info.setBorder(new BevelBorder(BevelBorder.LOWERED));
+    // info.setBorder(new BevelBorder(BevelBorder.LOWERED));
     info.setText("INFO");
     setLayout(new FlowLayout(FlowLayout.LEADING));
     add(info);
