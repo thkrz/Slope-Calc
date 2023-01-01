@@ -1,15 +1,25 @@
 package com.erdrutsch.slopecalc;
 
-import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.BorderLayout;
-import javax.swing.*;
 
-import com.erdrutsch.slopecalc.controls.*;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
+import com.erdrutsch.slopecalc.controls.Statusbar;
+import com.erdrutsch.slopecalc.controls.Terminal;
+import com.erdrutsch.slopecalc.controls.Toolbar;
+import com.erdrutsch.slopecalc.controls.Window;
+import com.formdev.flatlaf.FlatLightLaf;
 
 public class App extends JFrame {
   private final JDesktopPane mdi = new JDesktopPane();
   private final Statusbar sbar = new Statusbar();
-  // private final Toolbar tbar = new Toolbar();
+  private final Toolbar tbar = new Toolbar();
   private final Terminal term = new Terminal();
 
   App() {
@@ -23,12 +33,10 @@ public class App extends JFrame {
   private void createComponents() {
     mdi.add(new Window("Unknown"));
 
-    var panel = new JPanel();
-    panel.setLayout(new BorderLayout());
-    panel.add(mdi, BorderLayout.CENTER);
-    panel.add(term, BorderLayout.PAGE_END);
-    // add(tbar, BorderLayout.PAGE_NORTH);
-    add(panel, BorderLayout.CENTER);
+    var pane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, mdi, term);
+    pane.setResizeWeight(1.0);
+    add(tbar, BorderLayout.PAGE_START);
+    add(pane, BorderLayout.CENTER);
     add(sbar, BorderLayout.PAGE_END);
   }
 

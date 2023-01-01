@@ -1,8 +1,13 @@
 package com.erdrutsch.slopecalc.controls;
 
-import javax.swing.*;
+import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
 public class Window extends JInternalFrame {
+  private final Canvas canvas = new Canvas();
+
   public Window(String title) {
     this(title, true);
   }
@@ -18,8 +23,7 @@ public class Window extends JInternalFrame {
     var tab = new JTabbedPane();
     tab.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
     tab.setTabPlacement(JTabbedPane.BOTTOM);
-    var sc = new JScrollPane(new Canvas());
-    tab.addTab("Model", sc);
+    tab.addTab("Model", new JScrollPane(canvas));
     tab.addTab("Properties", new JPanel());
     getContentPane().add(tab);
   }
