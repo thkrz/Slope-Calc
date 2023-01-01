@@ -13,7 +13,7 @@ public class App extends JFrame {
   private final Terminal term = new Terminal();
 
   App() {
-    super("SSCAD");
+    super("Slope-Calc");
     setSize(800, 600);
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     createComponents();
@@ -21,7 +21,7 @@ public class App extends JFrame {
   }
 
   private void createComponents() {
-    mdi.add(new Window("Model"));
+    mdi.add(new Window("Unknown"));
 
     var panel = new JPanel();
     panel.setLayout(new BorderLayout());
