@@ -1,12 +1,16 @@
 package com.erdrutsch.slopecalc;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JSplitPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -31,7 +35,7 @@ public class App extends JFrame {
   }
 
   private void createComponents() {
-    mdi.add(new Window("Unknown"));
+    mdi.add(new Window("Unknown.sdc"));
 
     var pane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, mdi, term);
     pane.setResizeWeight(1.0);
@@ -44,6 +48,12 @@ public class App extends JFrame {
     var mbar = new JMenuBar();
 
     var menu = new JMenu("File");
+    menu.setMnemonic(KeyEvent.VK_A);
+    var item = new JMenuItem("Quit");
+    item.setMnemonic(KeyEvent.VK_Q);
+    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+    item.addActionListener((ev) -> this.dispose());
+    menu.add(item);
     mbar.add(menu);
 
     setJMenuBar(mbar);
