@@ -1,7 +1,6 @@
 package com.erdrutsch.slopecalc.controls;
 
 import java.awt.BorderLayout;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -9,28 +8,39 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class Terminal extends JPanel {
-  private final JTextArea stdout;
-  private final JTextField stdin;
-  private final JLabel prompt;
+  private final JTextArea stdout = new JTextArea();
+  private final JTextField stdin = new JTextField();
+  private final JLabel prompt = new JLabel();
 
   public Terminal() {
-    stdout = new JTextArea();
-    stdin = new JTextField();
-    prompt = new JLabel("Command: ");
     createComponents();
+    setPrompt();
   }
 
-  public void println(String s) {
-    stdout.append(s + "\n");
+  public void print(String s) {
+    this.print(s, "\n");
+  }
+
+  public void print(String s, String end) {
+    stdout.append(s + end);
   }
 
   public String read() {
-    return null;
+    return stdin.getText();
+  }
+
+  public void setPrompt() {
+    this.setPrompt("Command");
+  }
+
+  public void setPrompt(String ps) {
+    prompt.setText(ps + ": ");
   }
 
   private void createComponents() {
     stdout.setLineWrap(true);
     stdout.setEditable(false);
+    stdout.setBackground(stdin.getBackground());
     setLayout(new BorderLayout());
     add(
         new JScrollPane(
