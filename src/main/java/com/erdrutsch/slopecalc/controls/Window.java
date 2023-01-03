@@ -1,5 +1,6 @@
 package com.erdrutsch.slopecalc.controls;
 
+import com.erdrutsch.slopecalc.Model;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -7,16 +8,17 @@ import javax.swing.JTabbedPane;
 
 public class Window extends JInternalFrame {
   private final Canvas canvas = new Canvas();
+  private final Model model = new Model();
 
-  public Window(String title) {
-    this(title, true);
-  }
-
-  public Window(String title, boolean visible) {
-    super(title, true, true, true, true);
+  public Window() {
+    super(Model.DEFAULT_NAME, true, true, true, true);
     createComponents();
     pack();
-    setVisible(visible);
+    setVisible(true);
+  }
+
+  public Model getModel() {
+    return model;
   }
 
   private void createComponents() {

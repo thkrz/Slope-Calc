@@ -1,9 +1,13 @@
 package com.erdrutsch.slopecalc;
 
+import com.erdrutsch.slopecalc.controls.Statusbar;
+import com.erdrutsch.slopecalc.controls.Terminal;
+import com.erdrutsch.slopecalc.controls.Toolbar;
+import com.erdrutsch.slopecalc.controls.Window;
+import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -13,12 +17,6 @@ import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
-import com.erdrutsch.slopecalc.controls.Statusbar;
-import com.erdrutsch.slopecalc.controls.Terminal;
-import com.erdrutsch.slopecalc.controls.Toolbar;
-import com.erdrutsch.slopecalc.controls.Window;
-import com.formdev.flatlaf.FlatLightLaf;
 
 public class App extends JFrame {
   private final JDesktopPane mdi = new JDesktopPane();
@@ -35,7 +33,7 @@ public class App extends JFrame {
   }
 
   private void createComponents() {
-    mdi.add(new Window("Unknown.sdc"));
+    mdi.add(new Window());
 
     var pane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, mdi, term);
     pane.setResizeWeight(1.0);

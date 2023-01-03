@@ -1,0 +1,4 @@
+package com.erdrutsch.slopecalc;
+
+public class Controller {
+}
