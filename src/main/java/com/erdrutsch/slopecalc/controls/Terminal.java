@@ -1,17 +1,15 @@
 package com.erdrutsch.slopecalc.controls;
 
+import com.erdrutsch.slopecalc.command.Command;
+import com.erdrutsch.slopecalc.command.Result;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-import com.erdrutsch.slopecalc.command.Command;
-import com.erdrutsch.slopecalc.command.Result;
 
 public class Terminal extends JPanel {
   private final JTextArea stdout = new JTextArea();
@@ -24,7 +22,7 @@ public class Terminal extends JPanel {
   public Terminal() {
     createComponents();
     setPrompt();
-    stdin.addActionListener(this::submit);
+    stdin.addActionListener(this::execute);
   }
 
   public void disableEcho(boolean b) {
@@ -51,17 +49,21 @@ public class Terminal extends JPanel {
     prompt.setText(s + ": ");
   }
 
-  public void submit(ActionEvent e) {
-    if (echo) print(String.format("[%d]: %s", ++ln, read()));
+  public void execute(String s) {
+    if (echo) print(String.format("[%d]: %s", ++ln, s));
     if (cmd == null) // TODO: find cmd
       ;
     if (cmd == null) {
       print("command not found");
     } else {
-      var r = cmd.run(read());
+      var r = cmd.run(s);
       print(r.getMessage());
       if (r.getExitCode() != Result.ONGOING) cmd = null;
     }
+  }
+
+  public void execute(ActionEvent e) {
+    this.execute(read());
     stdin.setText(null);
   }
 
