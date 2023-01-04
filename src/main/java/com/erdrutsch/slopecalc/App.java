@@ -4,7 +4,6 @@ import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.KeyboardFocusManager;
-import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -27,7 +26,17 @@ public class App extends JFrame {
     KeyboardFocusManager.getCurrentKeyboardFocusManager()
         .addKeyEventDispatcher(
             e -> {
-              if (e.getKeyCode() == KeyEvent.VK_ESCAPE) c.getTerminal().execute("Ctrl+C");
+              if (e.isControlDown()) {
+                switch (e.getKeyChar()) {
+                  case 27: // [
+                  case 28: // \
+                    c.getTerminal().execute("Ctrl+C");
+                    break;
+                  case '9':
+                    c.getTerminal().focusInput();
+                    break;
+                }
+              }
               return false;
             });
   }

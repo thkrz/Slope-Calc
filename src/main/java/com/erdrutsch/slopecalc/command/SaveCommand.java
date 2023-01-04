@@ -25,11 +25,12 @@ public class SaveCommand extends AbstractCommand {
 
   @Override
   public Result run(String line) {
+    var model = c.getWindow().getModel();
     try {
-      c.getWindow().getModel().save();
+      model.save();
     } catch (IOException e) {
       return new Result(Result.FAILURE, e.toString());
     }
-    return new Result(Result.SUCCESS, String.format("'%s' saved", name));
+    return new Result(Result.SUCCESS, String.format("'%s' saved", model.getName()));
   }
 }

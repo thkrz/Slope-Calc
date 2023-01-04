@@ -47,9 +47,15 @@ public class Canvas extends JPanel
 
   @Override
   public void mouseClicked(MouseEvent e) {
-    if (term != null) {
-      term.execute(String.format("%d, %d", e.getX(), e.getY()));
-    }
+    if (term != null)
+      switch (e.getButton()) {
+        case MouseEvent.BUTTON1:
+          term.execute(String.format("%d, %d", e.getX(), e.getY()));
+          break;
+        case MouseEvent.BUTTON3:
+          term.execute("");
+          break;
+      }
   }
 
   @Override
