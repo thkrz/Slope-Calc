@@ -94,6 +94,7 @@ public class App extends JFrame {
 
   public static void main(String[] args) {
     try {
+      // UIManager.setLookAndFeel(new FlatDarkLaf());
       UIManager.setLookAndFeel(new FlatLightLaf());
     } catch (Exception e) {
       System.err.println("Failed to initialize Look & Feel");

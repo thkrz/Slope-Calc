@@ -35,15 +35,15 @@ public class Window extends JInternalFrame {
   }
 
   private void createComponents() {
+    var pane =
+        new JScrollPane(
+            canvas, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+    var v = pane.getVerticalScrollBar();
+    v.setValue(v.getMaximum());
     var tab = new JTabbedPane();
     tab.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
     tab.setTabPlacement(JTabbedPane.BOTTOM);
-    tab.addTab(
-        "Model",
-        new JScrollPane(
-            canvas,
-            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-            JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS));
+    tab.addTab("Model", pane);
     tab.addTab("Properties", new JPanel());
     getContentPane().add(tab);
     pack();
