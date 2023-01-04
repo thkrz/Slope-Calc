@@ -1,12 +1,15 @@
 package com.erdrutsch.slopecalc.command;
 
-import com.erdrutsch.slopecalc.Controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+
 import javax.swing.KeyStroke;
+
 import org.kordamp.ikonli.fluentui.FluentUiRegularMZ;
 import org.kordamp.ikonli.swing.FontIcon;
+
+import com.erdrutsch.slopecalc.Controller;
 
 public class SaveCommand extends AbstractCommand {
 

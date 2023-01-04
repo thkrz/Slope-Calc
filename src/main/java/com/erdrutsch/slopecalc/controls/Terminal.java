@@ -1,6 +1,8 @@
 package com.erdrutsch.slopecalc.controls;
 
+import com.erdrutsch.slopecalc.Path;
 import com.erdrutsch.slopecalc.command.Command;
+import com.erdrutsch.slopecalc.command.CommandNotFoundException;
 import com.erdrutsch.slopecalc.command.Result;
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -15,8 +17,8 @@ public class Terminal extends JPanel {
   private final JTextArea stdout = new JTextArea();
   private final JTextField stdin = new JTextField();
   private final JLabel prompt = new JLabel();
-  private boolean echo = true;
   private Command cmd = null;
+  private boolean echo = true;
   private int ln = 0;
 
   public Terminal() {
@@ -34,6 +36,7 @@ public class Terminal extends JPanel {
   }
 
   public void print(String s, String end) {
+    if (s == null) return;
     stdout.append(s + end);
   }
 
@@ -42,7 +45,8 @@ public class Terminal extends JPanel {
   }
 
   public void setPrompt() {
-    this.setPrompt("Command");
+    cmd = null;
+    setPrompt("Command");
   }
 
   public void setPrompt(String s) {
@@ -50,21 +54,31 @@ public class Terminal extends JPanel {
   }
 
   public void execute(String s) {
-    if (echo) print(String.format("[%d]: %s", ++ln, s));
-    if (cmd == null) // TODO: find cmd
-      ;
-    if (cmd == null) {
-      print("command not found");
-    } else {
-      var r = cmd.run(s);
-      print(r.getMessage());
-      if (r.getExitCode() != Result.ONGOING) cmd = null;
+    if (s.equals("Ctrl+C")) {
+      if (cmd != null) cmd.kill();
+      setPrompt();
+      return;
     }
+    if (echo) print(String.format("[%d]: %s", ++ln, s));
+    if (cmd == null)
+      try {
+        cmd = Path.search(s);
+      } catch (CommandNotFoundException e) {
+        print(e.getMessage());
+        return;
+      }
+    var r = cmd.run(s);
+    print(r.getMessage());
+    if (r.getExitCode() != Result.ONGOING) setPrompt();
   }
 
   public void execute(ActionEvent e) {
     this.execute(read());
     stdin.setText(null);
+  }
+
+  public void focusInput() {
+    stdin.requestFocusInWindow();
   }
 
   private void createComponents() {

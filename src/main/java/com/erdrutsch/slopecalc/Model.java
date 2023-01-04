@@ -1,5 +1,6 @@
 package com.erdrutsch.slopecalc;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -11,16 +12,25 @@ import java.io.Serializable;
 // import org.locationtech.jts.geom.Polygon;
 
 public class Model implements Serializable {
-  public static final String DEFAULT_NAME = "Unknown.sdc";
-  private String name = DEFAULT_NAME;
+  private String name;
 
   public static Model load(String name)
       throws ClassNotFoundException, FileNotFoundException, IOException {
-    var in = new ObjectInputStream(new FileInputStream(name));
+    return Model.load(new File(name));
+  }
+
+  public static Model load(File file)
+      throws ClassNotFoundException, FileNotFoundException, IOException {
+    var in = new ObjectInputStream(new FileInputStream(file));
     var model = (Model) in.readObject();
     in.close();
-    model.setName(name);
+    model.setName(file.getPath());
     return model;
+  }
+
+  public Model(int id) {
+    if (id == 0) name = "Unknow.sdc";
+    else name = String.format("Unknown (%d).sdc", id);
   }
 
   public void save() throws FileNotFoundException, IOException {

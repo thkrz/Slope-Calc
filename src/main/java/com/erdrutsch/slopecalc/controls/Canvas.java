@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 
 public class Canvas extends JPanel
     implements MouseListener, MouseMotionListener, MouseWheelListener {
+  private Terminal term;
 
   public Canvas() {
     setLayout(null);
@@ -24,6 +25,15 @@ public class Canvas extends JPanel
     addMouseListener(this);
     addMouseMotionListener(this);
     addMouseWheelListener(this);
+    closeTerminal();
+  }
+
+  public void sendToTerminal(Terminal term) {
+    this.term = term;
+  }
+
+  public void closeTerminal() {
+    term = null;
   }
 
   @Override
@@ -36,7 +46,11 @@ public class Canvas extends JPanel
   }
 
   @Override
-  public void mouseClicked(MouseEvent e) {}
+  public void mouseClicked(MouseEvent e) {
+    if (term != null) {
+      term.execute(String.format("%d, %d", e.getX(), e.getY()));
+    }
+  }
 
   @Override
   public void mouseDragged(MouseEvent e) {}

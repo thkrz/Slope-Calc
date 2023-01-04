@@ -1,60 +1,86 @@
 package com.erdrutsch.slopecalc;
 
-import com.erdrutsch.slopecalc.controls.Statusbar;
-import com.erdrutsch.slopecalc.controls.Terminal;
-import com.erdrutsch.slopecalc.controls.Toolbar;
-import com.erdrutsch.slopecalc.controls.Window;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
+import java.awt.FlowLayout;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
-import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.KeyStroke;
+import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 public class App extends JFrame {
-  private final JDesktopPane mdi = new JDesktopPane();
-  private final Statusbar sbar = new Statusbar();
-  private final Toolbar tbar = new Toolbar();
-  private final Terminal term = new Terminal();
+  private final Controller c = new Controller();
 
   App() {
     super("Slope-Calc");
+    Path.init(c);
     setSize(800, 600);
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     createComponents();
-    createMenu();
+    createNav();
+    KeyboardFocusManager.getCurrentKeyboardFocusManager()
+        .addKeyEventDispatcher(
+            e -> {
+              if (e.getKeyCode() == KeyEvent.VK_ESCAPE) c.getTerminal().execute("Ctrl+C");
+              return false;
+            });
+  }
+
+  @Override
+  public void setVisible(boolean b) {
+    super.setVisible(b);
+    c.getTerminal().focusInput();
   }
 
   private void createComponents() {
-    mdi.add(new Window());
-
-    var pane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, mdi, term);
+    var pane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, c.getDesktopPane(), c.getTerminal());
     pane.setResizeWeight(1.0);
-    add(tbar, BorderLayout.PAGE_START);
     add(pane, BorderLayout.CENTER);
-    add(sbar, BorderLayout.PAGE_END);
+    add(c.getStatusbar(), BorderLayout.PAGE_END);
   }
 
-  private void createMenu() {
+  private void createNav() {
     var mbar = new JMenuBar();
-
-    var menu = new JMenu("File");
-    menu.setMnemonic(KeyEvent.VK_A);
-    var item = new JMenuItem("Quit");
-    item.setMnemonic(KeyEvent.VK_Q);
-    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
-    item.addActionListener((ev) -> this.dispose());
-    menu.add(item);
-    mbar.add(menu);
-
+    var tbar = new JPanel();
+    tbar.setLayout(new FlowLayout(FlowLayout.LEADING));
+    Path.commands.forEach(
+        (name, list) -> {
+          var m = new JMenu(name);
+          m.setMnemonic(name.getBytes()[0]);
+          var tb = new JToolBar(name);
+          tb.setFloatable(true);
+          list.forEach(
+              a -> {
+                if (a == null) {
+                  m.addSeparator();
+                  tb.addSeparator();
+                } else {
+                  m.add(a);
+                  if (a.hasIcon()) tb.add(a);
+                }
+              });
+          mbar.add(m);
+          // clean toolbar
+          int twice = 0;
+          var components = tb.getComponents();
+          for (int i = 0; i < components.length; i++) {
+            var child = components[i];
+            if (child instanceof JToolBar.Separator) twice++;
+            if (twice == 2 || (twice == 1 && i == components.length - 1)) {
+              tb.remove(child);
+              twice = 0;
+            }
+          }
+          tbar.add(tb);
+        });
     setJMenuBar(mbar);
+    add(tbar, BorderLayout.PAGE_START);
   }
 
   public static void main(String[] args) {
