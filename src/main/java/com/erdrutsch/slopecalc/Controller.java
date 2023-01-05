@@ -3,7 +3,9 @@ package com.erdrutsch.slopecalc;
 import com.erdrutsch.slopecalc.controls.Statusbar;
 import com.erdrutsch.slopecalc.controls.Terminal;
 import com.erdrutsch.slopecalc.controls.Window;
+import java.beans.PropertyVetoException;
 import javax.swing.JDesktopPane;
+import javax.swing.JScrollPane;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
@@ -18,9 +20,16 @@ public class Controller implements InternalFrameListener {
     addWindow(wnd);
   }
 
-  public void addWindow(Window w) {
-    w.addInternalFrameListener(this);
-    mdi.add(w);
+  public void addWindow(Window wnd) {
+    wnd.getCanvas().setStatusbar(sbar);
+    wnd.addInternalFrameListener(this);
+    mdi.add(wnd);
+    try {
+      wnd.setMaximum(true);
+    } catch (PropertyVetoException e) {
+    }
+    var v = ((JScrollPane) wnd.getCanvas().getParent().getParent()).getVerticalScrollBar();
+    v.setValue(v.getMaximum());
   }
 
   public JDesktopPane getDesktopPane() {
@@ -51,6 +60,7 @@ public class Controller implements InternalFrameListener {
 
   public void internalFrameActivated(InternalFrameEvent e) {
     wnd = (Window) e.getSource();
+    wnd.getCanvas().setStatusbar(sbar);
   }
 
   public void internalFrameDeactivated(InternalFrameEvent e) {}

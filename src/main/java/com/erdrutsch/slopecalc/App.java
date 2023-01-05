@@ -86,7 +86,7 @@ public class App extends JFrame {
               twice = 0;
             }
           }
-          tbar.add(tb);
+          if (tb.getComponentCount() > 0) tbar.add(tb);
         });
     setJMenuBar(mbar);
     add(tbar, BorderLayout.PAGE_START);

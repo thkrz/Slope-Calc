@@ -12,6 +12,10 @@ public class Statusbar extends JPanel {
     createComponents();
   }
 
+  public void setStatus(String s) {
+    info.setText(s);
+  }
+
   private void createComponents() {
     // info.setBorder(new BevelBorder(BevelBorder.LOWERED));
     info.setText("INFO");

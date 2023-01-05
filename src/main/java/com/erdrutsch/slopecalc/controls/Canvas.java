@@ -14,6 +14,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import javax.swing.JPanel;
 
 public class Canvas extends JPanel
@@ -24,8 +25,9 @@ public class Canvas extends JPanel
       new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {1, 2}, 0);
   private final Dimension size = new Dimension(3000, 3000);
   private final AffineTransform xform = new AffineTransform();
-  private Terminal term;
+  private Statusbar info;
   private double scale;
+  private Terminal term;
 
   public Canvas() {
     setLayout(null);
@@ -36,7 +38,12 @@ public class Canvas extends JPanel
     addMouseMotionListener(this);
     addMouseWheelListener(this);
     closeTerminal();
+    info = null;
     scale = 1.0;
+  }
+
+  public void setStatusbar(Statusbar s) {
+    info = s;
   }
 
   public void sendToTerminal(Terminal term) {
@@ -86,7 +93,17 @@ public class Canvas extends JPanel
   public void mouseExited(MouseEvent e) {}
 
   @Override
-  public void mouseMoved(MouseEvent e) {}
+  public void mouseMoved(MouseEvent e) {
+    if (info == null) return;
+    var a = new Point2D.Double(e.getX(), e.getY());
+    var b = new Point2D.Double();
+    try {
+      var yform = xform.createInverse();
+      yform.transform(a, b);
+      info.setStatus(String.format("%f, %f", b.getX(), b.getY()));
+    } catch (Exception ex) {
+    }
+  }
 
   @Override
   public void mousePressed(MouseEvent e) {}
