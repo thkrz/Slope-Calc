@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
 import java.awt.Toolkit;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -16,7 +18,7 @@ import java.awt.event.MouseWheelListener;
 import javax.swing.JPanel;
 
 public class Canvas extends JPanel
-    implements MouseListener, MouseMotionListener, MouseWheelListener {
+    implements ComponentListener, MouseListener, MouseMotionListener, MouseWheelListener {
   public enum Mode {
     BOTH,
     X,
@@ -26,7 +28,7 @@ public class Canvas extends JPanel
   private final int margin = 75;
   private final Stroke dotted =
       new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {1, 2}, 0);
-  private final Dimension size = new Dimension(3000, 3000);
+  private final Dimension size = new Dimension(1000, 1000);
   private final Transform xform = new Transform();
   private Statusbar info = null;
   private double scale = 1.0;
@@ -40,6 +42,7 @@ public class Canvas extends JPanel
     setDoubleBuffered(true);
     setPreferredSize(size);
     setCursor();
+    addComponentListener(this);
     addMouseListener(this);
     addMouseMotionListener(this);
     addMouseWheelListener(this);
@@ -62,12 +65,11 @@ public class Canvas extends JPanel
 
   @Override
   protected void paintComponent(Graphics g) {
-//     super.paintComponent(g);
+    super.paintComponent(g);
     var g2 = (Graphics2D) g.create();
     g2.setColor(getBackground());
     g2.fillRect(0, 0, getWidth(), getHeight());
     drawGrid(g2);
-    xform.setTransform(scale, margin, getHeight() - margin, z);
     g2.setTransform(xform);
     // draw
     g2.setColor(Color.RED);
@@ -121,6 +123,21 @@ public class Canvas extends JPanel
     revalidate();
     info.showScale(scale);
   }
+
+  @Override
+  public void componentHidden(ComponentEvent e) {}
+
+  @Override
+  public void componentMoved(ComponentEvent e) {}
+
+  @Override
+  public void componentResized(ComponentEvent e) {
+    xform.setTransform(scale, margin, getHeight() - margin, z);
+    repaint();
+  }
+
+  @Override
+  public void componentShown(ComponentEvent e) {}
 
   private void setCursor() {
     var tk = Toolkit.getDefaultToolkit();
