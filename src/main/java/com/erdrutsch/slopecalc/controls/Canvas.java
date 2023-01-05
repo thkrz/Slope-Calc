@@ -24,13 +24,10 @@ public class Canvas extends JPanel
     X,
     NONE
   }
-
+  private final GridRenderer grid = new GridRenderer(50, 50, 100, 100);
   private final int margin = 75;
-  private final Stroke dotted =
-      new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {1, 2}, 0);
   private final Dimension size = new Dimension(1000, 1000);
   private final Transform xform = new Transform();
-  private Statusbar info = null;
   private double scale = 1.0;
   private double z = 1.0;
   private Terminal pipe;
@@ -49,10 +46,6 @@ public class Canvas extends JPanel
     closePipe();
   }
 
-  public void setStatusbar(Statusbar s) {
-    info = s;
-  }
-
   public void openPipe(Terminal pipe, Mode mode) {
     this.pipe = pipe;
     this.mode = mode;
@@ -69,7 +62,7 @@ public class Canvas extends JPanel
     var g2 = (Graphics2D) g.create();
     g2.setColor(getBackground());
     g2.fillRect(0, 0, getWidth(), getHeight());
-    drawGrid(g2);
+    grid.render(g2, getWidth(), getHeight());
     g2.setTransform(xform);
     // draw
     g2.setColor(Color.RED);
@@ -103,11 +96,7 @@ public class Canvas extends JPanel
   public void mouseExited(MouseEvent e) {}
 
   @Override
-  public void mouseMoved(MouseEvent e) {
-    if (info == null) return;
-    var p = xform.inverseTransform(e.getX(), e.getY());
-    info.showCoordinates(p[0], p[1]);
-  }
+  public void mouseMoved(MouseEvent e) {}
 
   @Override
   public void mousePressed(MouseEvent e) {}
@@ -121,7 +110,6 @@ public class Canvas extends JPanel
     setPreferredSize(
         new Dimension((int) Math.round(size.width * scale), (int) Math.round(size.height * scale)));
     revalidate();
-    info.showScale(scale);
   }
 
   @Override
@@ -143,17 +131,5 @@ public class Canvas extends JPanel
     var tk = Toolkit.getDefaultToolkit();
     var im = tk.getImage(getClass().getResource("cross_hair.png"));
     super.setCursor(tk.createCustomCursor(im, new Point(64, 64), "cross_hair"));
-  }
-
-  private void drawGrid(Graphics2D g) {
-    g.setColor(Color.GRAY);
-    var stroke = g.getStroke();
-    g.setStroke(dotted);
-    for (int i = 50; i < getWidth(); i += 100)
-      for (int j = 50; j < getHeight(); j += 100) {
-        g.drawLine(i - 8, j, i + 8, j);
-        g.drawLine(i, j - 8, i, j + 8);
-      }
-    g.setStroke(stroke);
   }
 }

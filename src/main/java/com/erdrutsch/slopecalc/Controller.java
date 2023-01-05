@@ -21,7 +21,6 @@ public class Controller implements InternalFrameListener {
   }
 
   public void addWindow(Window wnd) {
-    wnd.getCanvas().setStatusbar(sbar);
     wnd.addInternalFrameListener(this);
     mdi.add(wnd);
     try {
@@ -48,20 +47,26 @@ public class Controller implements InternalFrameListener {
     return wnd;
   }
 
+  @Override
   public void internalFrameClosing(InternalFrameEvent e) {}
 
+  @Override
   public void internalFrameClosed(InternalFrameEvent e) {}
 
+  @Override
   public void internalFrameOpened(InternalFrameEvent e) {}
 
+  @Override
   public void internalFrameIconified(InternalFrameEvent e) {}
 
+  @Override
   public void internalFrameDeiconified(InternalFrameEvent e) {}
 
+  @Override
   public void internalFrameActivated(InternalFrameEvent e) {
     wnd = (Window) e.getSource();
-    wnd.getCanvas().setStatusbar(sbar);
   }
 
+  @Override
   public void internalFrameDeactivated(InternalFrameEvent e) {}
 }
