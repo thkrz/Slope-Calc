@@ -6,6 +6,7 @@ import com.erdrutsch.slopecalc.command.NewCommand;
 import com.erdrutsch.slopecalc.command.OpenCommand;
 import com.erdrutsch.slopecalc.command.QuitCommand;
 import com.erdrutsch.slopecalc.command.RidgeCommand;
+import com.erdrutsch.slopecalc.command.SaveAsCommand;
 import com.erdrutsch.slopecalc.command.SaveCommand;
 import java.util.List;
 import java.util.SortedMap;
@@ -19,7 +20,13 @@ public class Path {
     commands.put(
         "File",
         Stream.of(
-                new NewCommand(c), new OpenCommand(c), new SaveCommand(c), null, new QuitCommand(c))
+                new NewCommand(c),
+                new OpenCommand(c),
+                null,
+                new SaveCommand(c),
+                new SaveAsCommand(c),
+                null,
+                new QuitCommand(c))
             .toList());
     commands.put("Tools", Stream.of((AbstractCommand) new RidgeCommand(c)).toList());
   }

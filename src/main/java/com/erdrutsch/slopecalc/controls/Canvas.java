@@ -1,12 +1,10 @@
 package com.erdrutsch.slopecalc.controls;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -24,10 +22,12 @@ public class Canvas extends JPanel
     X,
     NONE
   }
+
   private final GridRenderer grid = new GridRenderer(50, 50, 100, 100);
   private final int margin = 75;
   private final Dimension size = new Dimension(1000, 1000);
   private final Transform xform = new Transform();
+  private StatusListener l;
   private double scale = 1.0;
   private double z = 1.0;
   private Terminal pipe;
@@ -44,6 +44,10 @@ public class Canvas extends JPanel
     addMouseMotionListener(this);
     addMouseWheelListener(this);
     closePipe();
+  }
+
+  public void addStatusListener(StatusListener l) {
+    this.l = l;
   }
 
   public void openPipe(Terminal pipe, Mode mode) {
@@ -96,7 +100,10 @@ public class Canvas extends JPanel
   public void mouseExited(MouseEvent e) {}
 
   @Override
-  public void mouseMoved(MouseEvent e) {}
+  public void mouseMoved(MouseEvent e) {
+    var p = xform.inverseTransform(e.getX(), e.getY());
+    l.setStatus(p[0], p[1]);
+  }
 
   @Override
   public void mousePressed(MouseEvent e) {}
@@ -106,9 +113,9 @@ public class Canvas extends JPanel
 
   @Override
   public void mouseWheelMoved(MouseWheelEvent e) {
-    scale = Math.min(4.0, Math.max(0.1, e.getWheelRotation() > 0 ? scale * 1.2 : scale / 1.2));
+    scale = Math.min(4.0, Math.max(0.1, e.getWheelRotation() > 0 ? scale * 1.1 : scale / 1.1));
     setPreferredSize(
-        new Dimension((int) Math.round(size.width * scale), (int) Math.round(size.height * scale)));
+        new Dimension((int) (size.width * scale), (int) (size.height * scale)));
     revalidate();
   }
 
