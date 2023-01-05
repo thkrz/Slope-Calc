@@ -13,74 +13,82 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 import javax.swing.JPanel;
 
 public class Canvas extends JPanel
     implements MouseListener, MouseMotionListener, MouseWheelListener {
-  // TODO: clipping ?
+  public enum Mode {
+    BOTH,
+    X,
+    NONE
+  }
+
   private final int margin = 75;
   private final Stroke dotted =
       new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[] {1, 2}, 0);
   private final Dimension size = new Dimension(3000, 3000);
-  private final AffineTransform xform = new AffineTransform();
-  private Statusbar info;
-  private double scale;
-  private Terminal term;
+  private final Transform xform = new Transform();
+  private Statusbar info = null;
+  private double scale = 1.0;
+  private double z = 1.0;
+  private Terminal pipe;
+  private Mode mode;
 
   public Canvas() {
     setLayout(null);
     setBackground(Color.BLACK);
+    setDoubleBuffered(true);
     setPreferredSize(size);
     setCursor();
     addMouseListener(this);
     addMouseMotionListener(this);
     addMouseWheelListener(this);
-    closeTerminal();
-    info = null;
-    scale = 1.0;
+    closePipe();
   }
 
   public void setStatusbar(Statusbar s) {
     info = s;
   }
 
-  public void sendToTerminal(Terminal term) {
-    this.term = term;
+  public void openPipe(Terminal pipe, Mode mode) {
+    this.pipe = pipe;
+    this.mode = mode;
   }
 
-  public void closeTerminal() {
-    term = null;
+  public void closePipe() {
+    pipe = null;
+    mode = Mode.NONE;
   }
 
   @Override
-  public void paint(Graphics g) {
+  protected void paintComponent(Graphics g) {
+//     super.paintComponent(g);
     var g2 = (Graphics2D) g.create();
     g2.setColor(getBackground());
     g2.fillRect(0, 0, getWidth(), getHeight());
     drawGrid(g2);
-    xform.setTransform(scale, 0, 0, -scale, margin, getHeight() - margin);
+    xform.setTransform(scale, margin, getHeight() - margin, z);
     g2.setTransform(xform);
     // draw
     g2.setColor(Color.RED);
-    g2.drawLine(0, 0, 128, 0);
-    g2.drawLine(0, 0, 0, 128);
+    g2.drawLine(0, 0, 200, 200);
 
     g2.dispose();
   }
 
   @Override
   public void mouseClicked(MouseEvent e) {
-    if (term != null)
-      switch (e.getButton()) {
-        case MouseEvent.BUTTON1:
-          term.execute(String.format("%d, %d", e.getX(), e.getY()));
-          break;
-        case MouseEvent.BUTTON3:
-          term.execute("");
-          break;
-      }
+    if (mode == Mode.NONE) return;
+    switch (e.getButton()) {
+      case MouseEvent.BUTTON1:
+        var p = xform.inverseTransform(e.getX(), e.getY());
+        if (mode == Mode.BOTH) pipe.execute(String.format("%.0f, %.0f", p[0], p[1]));
+        else if (mode == Mode.X) pipe.execute(String.format("%.0f", p[0]));
+        break;
+      case MouseEvent.BUTTON3:
+        pipe.execute();
+        break;
+    }
   }
 
   @Override
@@ -95,14 +103,8 @@ public class Canvas extends JPanel
   @Override
   public void mouseMoved(MouseEvent e) {
     if (info == null) return;
-    var a = new Point2D.Double(e.getX(), e.getY());
-    var b = new Point2D.Double();
-    try {
-      var yform = xform.createInverse();
-      yform.transform(a, b);
-      info.setStatus(String.format("%f, %f", b.getX(), b.getY()));
-    } catch (Exception ex) {
-    }
+    var p = xform.inverseTransform(e.getX(), e.getY());
+    info.showCoordinates(p[0], p[1]);
   }
 
   @Override
@@ -117,6 +119,7 @@ public class Canvas extends JPanel
     setPreferredSize(
         new Dimension((int) Math.round(size.width * scale), (int) Math.round(size.height * scale)));
     revalidate();
+    info.showScale(scale);
   }
 
   private void setCursor() {

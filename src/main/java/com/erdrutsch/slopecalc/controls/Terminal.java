@@ -53,7 +53,12 @@ public class Terminal extends JPanel {
     prompt.setText(s + ": ");
   }
 
+  public void execute() {
+    execute("");
+  }
+
   public void execute(String s) {
+    s = s.trim();
     if (s.equals("Ctrl+C")) {
       if (cmd != null) cmd.kill();
       setPrompt();

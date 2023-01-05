@@ -42,6 +42,7 @@ public class Model implements Serializable {
     out.writeObject(this);
     out.flush();
     out.close();
+    this.name = name;
   }
 
   public void setName(String name) {
